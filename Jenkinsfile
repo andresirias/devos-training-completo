@@ -39,29 +39,29 @@ podTemplate(yaml: '''
     properties([
       pipelineTriggers([[
         $class: 'GenericTrigger',
-        token: 'cgomez_cd',
+        token: 'scodex_cd',
         genericVariables: [[key: 'ref', value: '$.ref']],
         regexpFilterText:"\$ref",
         regexpFilterExpression: 'refs/heads/main'
     ]])])
     stage('Build with Kaniko') {
-      git branch: 'main', credentialsId: 'github_access', url: 'https://github.com/charlie83Gs/devos-training-completo'
+      git branch: 'main', credentialsId: '5640c351-ad51-4440-b828-68d2d04f9b70', url: 'https://github.com/andresirias/devos-training-completo.git'
       container('kaniko') {
         withCredentials([file(credentialsId: 'dockerhub', variable: 'FILE')]) {
           sh 'cp $FILE /kaniko/.docker/config.json'
-          sh '/kaniko/executor --dockerfile `pwd`/Dockerfile -c `pwd` --destination=charlie83gs/react_page:latest'
+          sh '/kaniko/executor --dockerfile `pwd`/Dockerfile -c `pwd` --destination=andresirias/page:latest'
         }
       }
     }
     stage('Deploy to kubernetes') {
-      git branch: 'main', credentialsId: 'github_access', url: 'https://github.com/charlie83Gs/devos-training-completo'
+      git branch: 'main', credentialsId: '5640c351-ad51-4440-b828-68d2d04f9b70', url: 'https://github.com/andresirias/devos-training-completo.git'
       container('kubectl') {
         withCredentials([file(credentialsId: 'kubernetes-config-file', variable: 'FILE')]) {
           sh 'mkdir -p ~/.kube/'
           sh 'cp $FILE ~/.kube/config'
           sh 'kubectl apply -f page.yaml'
-          sh 'kubectl label namespace cgomez istio-injection=enabled --overwrite'
-          sh 'kubectl rollout restart -n cgomez deployment/cgomez-deployment'
+          sh 'kubectl label namespace scodex istio-injection=enabled --overwrite'
+          sh 'kubectl rollout restart -n scodex deployment/scodex-deployment'
         }
       }
     }
