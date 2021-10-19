@@ -26,7 +26,7 @@ WORKDIR /app
 
 RUN npm -g install serve
 
-COPY --from=build /app/build ./build/cgomez
+COPY --from=build /app/build ./build/scodex
 
 EXPOSE 3000
 # serve on port 3000

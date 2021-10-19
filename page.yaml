@@ -2,32 +2,32 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: cgomez
+  name: scodex
   labels:
-    name: cgomez
+    name: scodex
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cgomez-deployment
-  namespace: cgomez
+  name: scodex-deployment
+  namespace: scodex
   labels:
-    app: cgomez
+    app: scodex
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cgomez
+      app: scodex
   template:
     metadata:
       labels:
-        app: cgomez
+        app: scodex
     spec:
       nodeSelector:
         purpose: general
       containers:
-      - name: cgomez
-        image: charlie83gs/react_page:latest
+      - name: scodex
+        image: andresirias/react_page:latest
         ports:
         - containerPort: 3000
       
@@ -35,11 +35,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: cgomez-service
-  namespace: cgomez
+  name: scodex-service
+  namespace: scodex
 spec:
   selector:
-    app: cgomez
+    app: scodex
   ports:
   - protocol: TCP
     port: 3000
@@ -48,19 +48,19 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: cgomez
-  namespace: cgomez
+  name: scodex
+  namespace: scodex
 spec:
   hosts:
   - "*"
   gateways:
   - istio-custom/devops-gateway
   http:
-    - name: "cgomez-routes"
+    - name: "scodex-routes"
       match:
       - uri: 
-          prefix: "/cgomez"
+          prefix: "/scodex"
       route:
         - destination:
-            host: cgomez-service.cgomez.svc.cluster.local
+            host: scodex-service.scodex.svc.cluster.local
 
